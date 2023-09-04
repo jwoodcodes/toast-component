@@ -5,37 +5,24 @@ import Button from "../Button";
 import styles from "./ToastPlayground.module.css";
 // import Toast from "../Toast"
 import ToastShelf from "../ToastShelf/ToastShelf";
+import { ToastContext } from "../ToastProvider";
 
 const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
 function ToastPlayground() {
-  const [toasts, setToasts] = React.useState([])
+  // const [toasts, setToasts] = React.useState([])
+  // const { toasts } = React.useContext(ToastContext)
+  const {CreateToast} = React.useContext(ToastContext)
   const [message, setMessage] = React.useState("");
   const [variant, setVarient] = React.useState(VARIANT_OPTIONS[0]);
 
-  function handleCreateToasts(event) {
-    event.preventDefault()
-    const nextToasts = [
-      ...toasts,
-      {
-        id: crypto.randomUUID(),
-        message, 
-        variant,
-      }
-    ]
-    setToasts(nextToasts)
+ function handleCreateToast(event) {
+  event.preventDefault();
+  CreateToast(message, variant)
 
-    setMessage('')
-    setVarient(VARIANT_OPTIONS[0])
-  }
-
-  function handleDismiss(id) {
-    const nextToasts = toasts.filter(toast => {
-      return toast.id !== id
-    })
-
-    setToasts(nextToasts);
-  }
+  setMessage('')
+  setVarient(VARIANT_OPTIONS[0])
+ }
 
   return (
     <div className={styles.wrapper}>
@@ -46,9 +33,9 @@ function ToastPlayground() {
 
 
 
-<ToastShelf toasts={toasts} handleDismiss={handleDismiss}/>
+<ToastShelf  />
 
-      <form className={styles.controlsWrapper} handleCreateToasts={handleCreateToasts}>
+      <form className={styles.controlsWrapper} onSubmit={handleCreateToast}>
         <div className={styles.row}>
           <label
             htmlFor="message"
@@ -99,7 +86,7 @@ function ToastPlayground() {
           <div className={styles.label} />
           <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
             <Button
-              onClick={handleCreateToasts}
+              onClick={() => CreateToast(message, variant)}
               
             >
               Pop Toast!
